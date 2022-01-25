@@ -1,33 +1,106 @@
 ---
 title: "Descriptive Statistics"
-output: html_document
+output: 
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
 ---
+
+<!-- # ```{css my-header-colors, echo = FALSE} -->
+<!-- # .page-header { -->
+<!-- #     background-image: linear-gradient(120deg, red, orange); -->
+<!-- # } -->
+<!-- # ``` -->
+
 
 ```{r setup, include=FALSE}
 library(knitr)
 library(dplyr)
 library(ggplot2)
+library(tidyr)
+library(ggthemes)
+library(kableExtra)
 knitr::opts_chunk$set(echo = TRUE)
 load('../../Ecobici_filtered.Rda')
 # ecodata <- Ecobici$ecodata
 # ecodata <- ecodata[1:100000, ]
 ```
 
-## ¿Qué % de mujeres/hombres usaron la bici por mes?
+# Porcentage de uso
 
-```{r}
+### ¿Cuántas mujeres/hombres usaron la bici por mes?
+
+```{r echo=FALSE}
 use_by_gender <- ecodata |> 
   group_by(genero_usuario, fecha_arribo) |> 
   summarise(n = n(), .groups = "drop") |> 
   #mutate(freq = n / sum(n)) |> 
-  arrange(fecha_arribo)
-knitr::kable(use_by_gender)
+  arrange(fecha_arribo) 
+knitr::kable(use_by_gender |>  spread(fecha_arribo, n), 
+             table.attr = "style='width:30%;'") |> 
+  kable_styling()
+```
+
+### ¿A qué porcentaje corresponde?
+
+
+```{r echo=FALSE}
+use_by_gender_per <- ecodata |> 
+  group_by(genero_usuario, fecha_arribo) |> 
+  summarise(n = n(), .groups = "drop") |> 
+  group_by(fecha_arribo) |> 
+  mutate(freq = (n / sum(n))) |> 
+  arrange(fecha_arribo) |> 
+  select(-n)
+knitr::kable(use_by_gender_per |> 
+               mutate(freq = sprintf("%1.2f%%", freq*100)) |> spread(fecha_arribo, freq))
+```
+```{r echo=FALSE}
+female <- use_by_gender_per |> 
+  filter(genero_usuario == "F") |> 
+  ungroup() |> 
+  summarise(mean(freq))
+male <- use_by_gender_per |> 
+  filter(genero_usuario == "M") |> 
+  ungroup() |> 
+  summarise(mean(freq))
 ```
 
 
-```{r}
-ggplot(use_by_gender, 
-       aes(x = fecha_arribo, y = n, 
-           group = genero_usuario, color = genero_usuario)) +
-  geom_line()
+El promedio de uso de ecobici en mujeres es de `r female` y el de los hombres es `r male`
+
+
+```{r echo=FALSE, fig.width=10,fig.height=4}
+ggplot(use_by_gender_per, 
+       aes(x = fecha_arribo, y = freq, 
+           group = genero_usuario, fill = genero_usuario)) +
+  geom_bar(stat="identity", position = "stack") +
+  labs(title="Porcentage de uso por género", 
+       subtitle="", 
+       caption="", 
+       fill = "Género") + 
+  scale_y_continuous(labels = scales::percent) +
+  theme_bw() +
+  theme(axis.title.y = element_blank(),
+        axis.title.x = element_blank())
 ```
+
+
+
+```{r echo=FALSE, fig.width=10,fig.height=4}
+ggplot(use_by_gender_per) + 
+geom_density(aes(x = freq, fill = genero_usuario), alpha=.7) + 
+  facet_grid(~genero_usuario, scales = "free") + 
+    labs(title="Densidad del porcentage de uso por género", 
+         subtitle="",
+         caption="",
+         fill = "Género")+
+  theme_bw() +
+  theme(axis.title.x = element_blank())
+```
+
+
+# Tiempo de uso
+
+
+
