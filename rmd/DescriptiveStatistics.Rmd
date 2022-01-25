@@ -1,0 +1,33 @@
+---
+title: "Descriptive Statistics"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(dplyr)
+library(ggplot2)
+knitr::opts_chunk$set(echo = TRUE)
+load('../../Ecobici_filtered.Rda')
+# ecodata <- Ecobici$ecodata
+# ecodata <- ecodata[1:100000, ]
+```
+
+## ¿Qué % de mujeres/hombres usaron la bici por mes?
+
+```{r}
+use_by_gender <- ecodata |> 
+  group_by(genero_usuario, fecha_arribo) |> 
+  summarise(n = n(), .groups = "drop") |> 
+  #mutate(freq = n / sum(n)) |> 
+  arrange(fecha_arribo)
+knitr::kable(use_by_gender)
+```
+
+
+```{r}
+ggplot(use_by_gender, 
+       aes(x = fecha_arribo, y = n, 
+           group = genero_usuario, color = genero_usuario)) +
+  geom_line()
+```
