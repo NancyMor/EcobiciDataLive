@@ -1,11 +1,13 @@
-#' Validate data
+#' Ecobici Input Data Validation
 #'
 #' @description
-#' This function will validate data from Ecobici object.
+#' This function will validate data from Ecobici data that has been uploaded and transformed
+#' previously. There are specific conditions that the data should have to continue with the next
+#' steps of the analysis.
 #'
 #' @param Ecobici list containing all Ecobici information.
 #'
-#' @return an object of class 'Ecobici'.
+#' @return an object of class 'Ecobici' with a new table called validation indicating which conditions were met.
 #'
 #' @export
 #'
@@ -23,7 +25,7 @@ ValidateInput <- function(Ecobici){
   }
 
   ## CHECK that fecha_retiro is the same as fecha_arribo
-  flag_date <- ifelse(sum(ecodata$fecha_arribo != ecodata$fecha_retiro)  / nrow(ecodata) > 0.05,
+  flag_date <- ifelse(sum(ecodata$fecha_arribo != ecodata$fecha_retiro) / nrow(ecodata) > 0.05,
                       1, 0)
   ## if it's no more than 5%, delete the cases, else stop the analysis
   if(flag_date == 0) {
@@ -47,8 +49,9 @@ ValidateInput <- function(Ecobici){
     warning('Age variable is not positive or is greater than 100.')
   }
 
-  Ecobici$validation <- data.frame(variable = c('length', 'date', 'gender', 'age'),
-                                   flag = as.logical(c(flag_length, flag_date,
+  ## CREATE validation table
+  Ecobici$validation <- data.frame(variable = c('Duración del viaje', 'Fecha', 'Género', 'Edad'),
+                                   status = !as.logical(c(flag_length, flag_date,
                                                        flag_gender, flag_age)))
   #SAVE validated data
   Ecobici$ecodata <- ecodata
