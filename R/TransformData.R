@@ -1,15 +1,17 @@
-#' Transform variables
+#' Transform Ecobici variables
 #'
 #' @description
-#' This function will transform variables in existing data.
+#' This function will transform and create new variables from Ecobici data.
 #'
 #' @param Ecobici list containing all Ecobici information.
 #'
-#' @return an object of class 'Ecobici'.
+#' @return an object of class 'Ecobici' with a new variable for the length of the trip.
 #'
 #' @export
 TransformData <- function(Ecobici) {
+  ## LOAD data
   ecodata <- Ecobici$ecodata
+  ## APPLY correct date format and ADD variable for length of the trip
   ecodata <- ecodata |>
     dplyr::mutate_at(vars(fecha_arribo, fecha_retiro), as.Date,
                      format = "%d/%m/%Y") |>
@@ -21,7 +23,6 @@ TransformData <- function(Ecobici) {
     dplyr::mutate(tiempo_uso_class = ifelse(tiempo_uso_mins <= 45, "<= 45 min",
                                             ifelse(tiempo_uso_mins > 45 & tiempo_uso_mins <= 60, "45-60 min",
                                             "> 60 min")))
-
   Ecobici$ecodata <- ecodata
   return(Ecobici)
 }

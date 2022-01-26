@@ -1,7 +1,7 @@
 #' Read Ecobici csv files
 #'
 #' @description
-#' This function will read all csv files.
+#' This function will read all csv files from an specified folder.
 #'
 #' @param path_file character string of the location of the files.
 #'
