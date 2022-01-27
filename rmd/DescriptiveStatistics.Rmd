@@ -91,6 +91,7 @@ use_by_gender_per <- ecodata |>
 ```
 
 
+
 ```{r echo=FALSE, fig.width=10,fig.height=4}
 ggplot(use_by_gender_per, 
        aes(x = fecha_arribo, y = freq, 
@@ -121,6 +122,27 @@ geom_density(aes(x = freq, fill = genero_usuario), alpha=.7) +
   scale_fill_manual(values = c(f_color, m_color, n_color))
 ```
 
+```{r echo=FALSE}
+use_by_gender_per_week <- use_by_gender_per |> 
+  mutate(dia_arribo = weekdays(fecha_arribo),
+         fin_semana = ifelse(dia_arribo %in% c('Friday', 'Saturday', 'Sunday'),
+                             'Fin de semana', 'Día laboral'))
+```
+
+```{r echo=FALSE, fig.width=10,fig.height=4}
+ggplot(use_by_gender_per_week, 
+       aes(x = fecha_arribo, y = freq,fill = fin_semana)) +
+  facet_wrap(~genero_usuario) + 
+  geom_bar(stat="identity") +
+  labs(title="Patrones por día de la semana", 
+       subtitle="", 
+       caption="", 
+       fill = "Tipo de día", y = 'porcentaje', x = 'fecha') + 
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_manual(values = c(f_color, m_color, n_color)) +
+  theme_bw()
+```
+
 ### Distribución de uso por edad
 
 ```{r echo=FALSE, fig.width=10,fig.height=4}
@@ -143,7 +165,7 @@ ggplot(use_by_age_per,
        aes(x = edad_usuario, y = freq)) +
   geom_bar(stat="identity", position = "stack") +
   geom_vline(xintercept = mean_age, color = 'red') + 
-  labs(title="Porcentage de uso por género", 
+  labs(title="Porcentage de uso por edad", 
        subtitle="", 
        caption="", 
        fill = "Género") + 
