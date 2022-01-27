@@ -28,6 +28,9 @@ m_color <- "#74B7A0"
 n_color <- "#110011"
 ```
 
+
+De Jul-Nov 2021 el total de préstamos de ecobici ascendió a `r format(nrow(ecodata), big.mark = ",")`
+
 # Porcentage de uso
 
 ### ¿Cuántas mujeres/hombres usaron la bici por mes?
@@ -56,6 +59,8 @@ knitr::kable(use_by_gender_per |>
                mutate(freq = sprintf("%1.2f%%", freq*100)) |> 
                spread(fecha, freq))
 ```
+
+
 ```{r echo=FALSE}
 female <- use_by_gender_per |> 
   filter(genero_usuario == "F") |> 
@@ -68,7 +73,9 @@ male <- use_by_gender_per |>
 ```
 
 
-El promedio de uso de ecobici en mujeres es de `r female` y el de los hombres es `r male`
+El promedio de uso de ecobici en mujeres es de 
+`r sprintf("%1.2f%%", female*100)` y el de los hombres es 
+`r sprintf("%1.2f%%", male*100)`
 
 ### Distribución de uso entre hombres y mujeres por día.
 
@@ -101,7 +108,6 @@ ggplot(use_by_gender_per,
 ```
 
 
-
 ```{r echo=FALSE, fig.width=10,fig.height=4}
 ggplot(use_by_gender_per) + 
 geom_density(aes(x = freq, fill = genero_usuario), alpha=.7) + 
@@ -115,6 +121,47 @@ geom_density(aes(x = freq, fill = genero_usuario), alpha=.7) +
   scale_fill_manual(values = c(f_color, m_color, n_color))
 ```
 
+### Distribución de uso por edad
+
+```{r echo=FALSE, fig.width=10,fig.height=4}
+use_by_age_per <- ecodata |> 
+  group_by(edad_usuario) |> 
+  summarise(n = n(), .groups = "drop") |> 
+  mutate(freq = (n / sum(n))) |> 
+  select(-n)
+
+mean_age <- use_by_age_per |> 
+  filter(freq == max(use_by_age_per$freq))
+mean_age <- mean_age$edad_usuario
+
+```
+La edad con más frecuencia de uso es `r paste(mean_age, " años")`
+
+
+```{r echo=FALSE, fig.width=10,fig.height=4}
+ggplot(use_by_age_per, 
+       aes(x = edad_usuario, y = freq)) +
+  geom_bar(stat="identity", position = "stack") +
+  geom_vline(xintercept = mean_age, color = 'red') + 
+  labs(title="Porcentage de uso por género", 
+       subtitle="", 
+       caption="", 
+       fill = "Género") + 
+  scale_y_continuous(labels = scales::percent) +
+  theme_bw() +
+  theme(axis.title.y = element_blank(),
+        axis.title.x = element_blank()) +
+  scale_fill_manual(values = c(f_color, m_color, n_color)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+```{r echo=FALSE}
+mean_upper_30 <- use_by_age_per |> 
+  filter(edad_usuario >= 30) |> 
+  summarise(sum_edad = sum(freq))
+```
+
+El `r sprintf("%1.2f%%", mean_upper_30*100)` de usuarios de ecobici tienen 30 años o más.
 
 # Tiempo de uso
 
@@ -138,7 +185,7 @@ ggplot(ecodata) +
 geom_boxplot(aes(x = tiempo_uso_mins), alpha=.7) + 
   #geom_density(aes(x = tiempo_uso_hrs)) + 
   #facet_grid(~genero_usuario, scales = "free") + 
-    labs(title="Distribución de tiempo de uso de cada bicicleta (hrs)", 
+    labs(title="Distribución de tiempo de uso de cada bicicleta (minutos)", 
          subtitle="",
          caption="",
          fill = "Género")+
@@ -152,7 +199,7 @@ geom_boxplot(aes(x = tiempo_uso_mins), alpha=.7) +
 ggplot(ecodata) + 
 geom_boxplot(aes(x = tiempo_uso_mins ), alpha=.7) + 
   facet_grid(~tiempo_uso_class, scales = "free") + 
-    labs(title="Distribución de tiempo de uso de cada bicicleta (hrs)", 
+    labs(title="Distribución de tiempo de uso de cada bicicleta (minutos)", 
          subtitle="",
          caption="",
          fill = "Género")+
@@ -179,7 +226,7 @@ print(tab_tiempo)
 ggplot(ecodata |> filter(tiempo_uso_mins <= 45)) + 
 geom_boxplot(aes(x = tiempo_uso_mins, color = genero_usuario), alpha=.7) + 
   facet_grid(~genero_usuario, scales = "free") + 
-    labs(title="Distribución de tiempo de uso de cada bicicleta (hrs)", 
+    labs(title="Distribución de tiempo de uso de cada bicicleta (minutos)", 
          subtitle="",
          caption="",
          fill = "Género")+
