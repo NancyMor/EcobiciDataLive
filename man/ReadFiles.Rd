@@ -10,7 +10,7 @@ ReadFiles(input_path = NULL)
 \item{input_path}{character string of the location of the files.}
 }
 \value{
-an object of class 'Ecobici'.
+a list.
 }
 \description{
 This function will read all csv files from an specified folder.
