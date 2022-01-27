@@ -9,7 +9,7 @@ Maintainer: The package maintainer <yourself@somewhere.net>
 Description: An small example of what a package for production looks like.
 License: What license is it under?
 Encoding: UTF-8
-Imports: magrittr, lubridate, readr
+Imports: magrittr, lubridate, dplyr, ggplot2
 Suggests: testthat, knitr
 LazyData: true
 RoxygenNote: 7.1.2

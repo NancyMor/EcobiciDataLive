@@ -4,10 +4,10 @@
 \alias{ReadFiles}
 \title{Read Ecobici csv files}
 \usage{
-ReadFiles(path_file = "./extdata/dataEcobici/")
+ReadFiles(input_path = NULL)
 }
 \arguments{
-\item{path_file}{character string of the location of the files.}
+\item{input_path}{character string of the location of the files.}
 }
 \value{
 an object of class 'Ecobici'.

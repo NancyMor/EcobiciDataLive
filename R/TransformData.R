@@ -13,7 +13,7 @@ TransformData <- function(Ecobici) {
   ecodata <- Ecobici$ecodata
   ## APPLY correct date format and ADD variable for length of the trip
   ecodata <- ecodata |>
-    dplyr::mutate_at(vars(fecha_arribo, fecha_retiro), as.Date,
+    dplyr::mutate_at(dplyr::vars(fecha_arribo, fecha_retiro), as.Date,
                      format = "%d/%m/%Y") |>
     dplyr::mutate(fecha = format(fecha_arribo,  "%Y-%m")) |>
     dplyr::mutate(tiempo_uso_mins = difftime(strptime(hora_arribo, "%H:%M:%S"),

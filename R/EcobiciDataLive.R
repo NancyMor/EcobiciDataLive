@@ -5,8 +5,8 @@
 #' @import magrittr
 #' @import dplyr
 #' @import lubridate
-#' @importFrom readr read_csv
+#' @import ggplot2
 #'
-#' @name EcibiciDataLive
+#' @name EcobiciDataLive
 #' @docType package
 NULL

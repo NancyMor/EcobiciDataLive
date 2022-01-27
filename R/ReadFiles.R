@@ -5,7 +5,7 @@
 #'
 #' @param input_path character string of the location of the files.
 #'
-#' @return an object of class 'Ecobici'.
+#' @return a list.
 #'
 #' @export
 ReadFiles <- function(input_path = NULL) {

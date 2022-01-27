@@ -19,7 +19,7 @@ ValidateInput <- function(Ecobici){
   ## if it's no more than 5%, delete the cases, else stop the analysis
   if(flag_length == 0) {
     ecodata <- ecodata %>%
-      filter(tiempo_uso_mins > 0 & !is.na(tiempo_uso_mins))
+      dplyr::filter(tiempo_uso_mins > 0 & !is.na(tiempo_uso_mins))
   } else {
     stop('More than 5% of the data has a length of use that is not positive.')
   }
@@ -30,7 +30,7 @@ ValidateInput <- function(Ecobici){
   ## if it's no more than 5%, delete the cases, else stop the analysis
   if(flag_date == 0) {
     ecodata <- ecodata %>%
-      filter(fecha_arribo == fecha_retiro)
+      dplyr::filter(fecha_arribo == fecha_retiro)
   } else {
     stop('More than 5% of the data has different fecha de retiro and fecha de arribo')
   }
