@@ -1,5 +1,7 @@
+
+
 createCSV <- function(Ecobici, output_path){
-  ecodata <- Ecobici$ecodata
-  output_file <- paste0(output_path, "/ecobiciData.csv")
-  write.csv(ecodata, file = output_file)
+  validation <- Ecobici$validation
+  output_file <- paste0(output_path, "/validationData.csv")
+  write.csv(validation, file = output_file, row.names = FALSE)
 }
