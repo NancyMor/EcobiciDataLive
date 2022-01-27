@@ -15,3 +15,7 @@ RunEcobici <- function(input_path = NULL, output_path = NULL){
   CreateHTML(Ecobici, output_path)
   createCSV(Ecobici, output_path)
 }
+
+#CODE PROFILING
+#profiling <- profvis::profvis(RunEcobici(input_path, output_path))
+#htmlwidgets::saveWidget(profiling, "../profile_results.html")

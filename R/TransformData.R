@@ -22,7 +22,9 @@ TransformData <- function(Ecobici) {
     dplyr::mutate(tiempo_uso_hrs = tiempo_uso_mins/60) |>
     dplyr::mutate(tiempo_uso_class = ifelse(tiempo_uso_mins <= 45, "<= 45 min",
                                             ifelse(tiempo_uso_mins > 45 & tiempo_uso_mins <= 60, "45-60 min",
-                                            "> 60 min")))
+                                            "> 60 min"))) |>
+    dplyr::mutate(tiempo_uso_class = factor(tiempo_uso_class, levels = c("<= 45 min", "45-60 min", "> 60 min")))
+
   Ecobici$ecodata <- ecodata
   return(Ecobici)
 }
