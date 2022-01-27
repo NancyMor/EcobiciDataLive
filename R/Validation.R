@@ -15,11 +15,11 @@ ValidateInput <- function(Ecobici){
   ecodata <- Ecobici$ecodata
 
   ## CHECK that no more than 5% the data has length of use greater than 0
-  flag_length <- ifelse(sum(ecodata$tiempo_uso <= 0) / nrow(ecodata) > 0.05, 1, 0)
+  flag_length <- ifelse(sum(ecodata$tiempo_uso_mins <= 0, na.rm = TRUE) / nrow(ecodata) > 0.05, 1, 0)
   ## if it's no more than 5%, delete the cases, else stop the analysis
   if(flag_length == 0) {
     ecodata <- ecodata %>%
-      filter(tiempo_uso > 0)
+      filter(tiempo_uso_mins > 0 & !is.na(tiempo_uso_mins))
   } else {
     stop('More than 5% of the data has a length of use that is not positive.')
   }

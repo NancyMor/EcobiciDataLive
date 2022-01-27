@@ -1,17 +1,17 @@
 ---
 title: "Descriptive Statistics"
-output: 
+output:
   prettydoc::html_pretty:
     theme: cayman
     highlight: github
 ---
 
-<!-- # ```{css my-header-colors, echo = FALSE} -->
-<!-- # .page-header { -->
-<!-- #     background-image: linear-gradient(120deg, red, orange); -->
-<!-- # } -->
-<!-- # ``` -->
 
+```{css my-header-colors, echo = FALSE}
+.page-header {
+  background-image: linear-gradient(120deg, rgb(116, 183, 160), rgb(151, 108, 179));
+}
+```
 
 ```{r setup, include=FALSE}
 library(knitr)
@@ -21,9 +21,11 @@ library(tidyr)
 library(ggthemes)
 library(kableExtra)
 knitr::opts_chunk$set(echo = TRUE)
-load('../../Ecobici_filtered.Rda')
-# ecodata <- Ecobici$ecodata
-# ecodata <- ecodata[1:100000, ]
+load('../extdata/Ecobici_HTML.Rda')
+
+f_color <- "#976CB3"
+m_color <- "#74B7A0"
+n_color <- "#110011"
 ```
 
 # Porcentage de uso
@@ -32,13 +34,11 @@ load('../../Ecobici_filtered.Rda')
 
 ```{r echo=FALSE}
 use_by_gender <- ecodata |> 
-  group_by(genero_usuario, fecha_arribo) |> 
+  group_by(genero_usuario, fecha) |> 
   summarise(n = n(), .groups = "drop") |> 
   #mutate(freq = n / sum(n)) |> 
-  arrange(fecha_arribo) 
-knitr::kable(use_by_gender |>  spread(fecha_arribo, n), 
-             table.attr = "style='width:30%;'") |> 
-  kable_styling()
+  arrange(fecha) 
+knitr::kable(use_by_gender |>  spread(fecha, n))
 ```
 
 ### ¿A qué porcentaje corresponde?
@@ -46,14 +46,15 @@ knitr::kable(use_by_gender |>  spread(fecha_arribo, n),
 
 ```{r echo=FALSE}
 use_by_gender_per <- ecodata |> 
-  group_by(genero_usuario, fecha_arribo) |> 
+  group_by(genero_usuario, fecha) |> 
   summarise(n = n(), .groups = "drop") |> 
-  group_by(fecha_arribo) |> 
+  group_by(fecha) |> 
   mutate(freq = (n / sum(n))) |> 
-  arrange(fecha_arribo) |> 
+  arrange(fecha) |> 
   select(-n)
 knitr::kable(use_by_gender_per |> 
-               mutate(freq = sprintf("%1.2f%%", freq*100)) |> spread(fecha_arribo, freq))
+               mutate(freq = sprintf("%1.2f%%", freq*100)) |> 
+               spread(fecha, freq))
 ```
 ```{r echo=FALSE}
 female <- use_by_gender_per |> 
@@ -69,6 +70,19 @@ male <- use_by_gender_per |>
 
 El promedio de uso de ecobici en mujeres es de `r female` y el de los hombres es `r male`
 
+### Distribución de uso entre hombres y mujeres por día.
+
+
+```{r echo=FALSE}
+use_by_gender_per <- ecodata |> 
+  group_by(genero_usuario, fecha_arribo) |> 
+  summarise(n = n(), .groups = "drop") |> 
+  group_by(fecha_arribo) |> 
+  mutate(freq = (n / sum(n))) |> 
+  arrange(fecha_arribo) |> 
+  select(-n)
+```
+
 
 ```{r echo=FALSE, fig.width=10,fig.height=4}
 ggplot(use_by_gender_per, 
@@ -82,7 +96,8 @@ ggplot(use_by_gender_per,
   scale_y_continuous(labels = scales::percent) +
   theme_bw() +
   theme(axis.title.y = element_blank(),
-        axis.title.x = element_blank())
+        axis.title.x = element_blank()) +
+  scale_fill_manual(values = c(f_color, m_color, n_color))
 ```
 
 
@@ -96,11 +111,83 @@ geom_density(aes(x = freq, fill = genero_usuario), alpha=.7) +
          caption="",
          fill = "Género")+
   theme_bw() +
-  theme(axis.title.x = element_blank())
+  theme(axis.title.x = element_blank()) +
+  scale_fill_manual(values = c(f_color, m_color, n_color))
 ```
 
 
 # Tiempo de uso
 
+El tiempo de uso promedio de las ecobicis es `r mean(ecodata$tiempo_uso_mins)` minutos.
+
+#### Distribución del tiempo en minutos
+
+```{r echo=FALSE, fig.width=10,fig.height=4}
+summary(ecodata$tiempo_uso_mins)
+```
+
+#### Distribución del tiempo en horas
+
+```{r echo=FALSE, fig.width=10,fig.height=4}
+summary(ecodata$tiempo_uso_hrs)
+```
+### Boxplot de la distrución de tiempo de uso por minutos.
+
+```{r echo=FALSE, fig.width=10,fig.height=4}
+ggplot(ecodata) + 
+geom_boxplot(aes(x = tiempo_uso_mins), alpha=.7) + 
+  #geom_density(aes(x = tiempo_uso_hrs)) + 
+  #facet_grid(~genero_usuario, scales = "free") + 
+    labs(title="Distribución de tiempo de uso de cada bicicleta (hrs)", 
+         subtitle="",
+         caption="",
+         fill = "Género")+
+  theme_bw() +
+  theme(axis.title.x = element_blank())
+```
+
+### Proporciones de usuarios por tiempo de uso
+
+```{r echo=FALSE, fig.width=10,fig.height=4}
+ggplot(ecodata) + 
+geom_boxplot(aes(x = tiempo_uso_mins ), alpha=.7) + 
+  facet_grid(~tiempo_uso_class, scales = "free") + 
+    labs(title="Distribución de tiempo de uso de cada bicicleta (hrs)", 
+         subtitle="",
+         caption="",
+         fill = "Género")+
+  theme_bw() +
+  theme(axis.title.x = element_blank())
+```
+
+
+### Proporción de usuarios por tiempo de uso
+
+```{r echo=FALSE, fig.width=10,fig.height=4}
+tab_tiempo <- ecodata |> 
+  group_by(tiempo_uso_class) |> 
+  summarise(n = n()) |> 
+  mutate(porcentaje = sprintf("%1.2f%%", n/sum(n) * 100))
+
+print(tab_tiempo)
+```
+
+### Distribución de tiempo de uso por género (menos de 45 min)
+
+
+```{r echo=FALSE, fig.width=10,fig.height=4}
+ggplot(ecodata |> filter(tiempo_uso_mins <= 45)) + 
+geom_boxplot(aes(x = tiempo_uso_mins, color = genero_usuario), alpha=.7) + 
+  facet_grid(~genero_usuario, scales = "free") + 
+    labs(title="Distribución de tiempo de uso de cada bicicleta (hrs)", 
+         subtitle="",
+         caption="",
+         fill = "Género")+
+  theme_bw() +
+  theme(axis.title.x = element_blank()) +
+  scale_color_manual(values = c(f_color, m_color, n_color)) +
+  coord_flip()
+
+```
 
 
