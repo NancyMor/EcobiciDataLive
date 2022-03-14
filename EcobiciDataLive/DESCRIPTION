@@ -1,0 +1,15 @@
+Package: EcobiciDataLive
+Type: Package
+Title: Ecobici Exploratory Analysis
+Version: 0.1.0
+Authors@R: c(
+    person("Nancy", "Morales", email = "nanmorla@gmai.com", role = "cre"),
+    person("Mariana", "Carmona", email = "mcarmonabaez@gmail.com", role = "aut"))
+Maintainer: The package maintainer <yourself@somewhere.net>
+Description: An small example of what a package for production looks like.
+License: What license is it under?
+Encoding: UTF-8
+Imports: magrittr, lubridate, dplyr, ggplot2
+Suggests: testthat, knitr
+LazyData: true
+RoxygenNote: 7.1.2
