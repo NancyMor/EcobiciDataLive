@@ -1,0 +1,24 @@
+
+-- HACER TODO EL ANALISIS PARA 2021
+
+-- Marianita empieza intro.
+-- Nancy hace match de la info.
+
+Hacer una intro de ecobici ---
+tal vez incluir un poco de datos de la encesta ecobici, 
+agregar dos o tres preguntas de la ecuesta de ecobici
+
+
+-- Uso por cicloestación y horario agrupado por género.
+    -- Match de los modulos con los datos originales. --PASAR A FORMATO TABLA
+    -- mapa de calor x genero (leftleat)
+    -- agregar un funcion en el proceso de analysis que haga merge de los modulos
+
+-- Analizar antiguedad de cada ecobici y su impacto en el tiempo de uso de la misma.
+    -- podemos acotar las bicis del año... (son 5 meses)
+    -- queremos graficar el tiempo en circulacion vs el uso acumulado de la misma (unidades: meses/minutos)
+
+--Impacto de expander ecobici a nuevas zonas.
+    -- basandonos en la apertura de modulos, ver la afluencia de cada nuevo modulo, crecimiento esperado de uso de ecobici dado que se abrió el modulo -- Turf analysis
+    -- lat/lon predicen cuantas bicis se van a usar
+

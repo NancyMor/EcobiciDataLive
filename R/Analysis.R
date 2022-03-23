@@ -10,10 +10,10 @@ RunEcobici <- function(input_path = NULL, output_path = NULL){
   Ecobici <- TransformData(Ecobici)
   Ecobici <- ValidateInput(Ecobici)
   ## SUMMARY results
-  Ecobici <- CreateTables(Ecobici)
+  #Ecobici <- CreateTables(Ecobici)
   ## EXPORT results
   CreateHTML(Ecobici, output_path)
-  createCSV(Ecobici, output_path)
+  #createCSV(Ecobici, output_path)
 }
 
 #CODE PROFILING
