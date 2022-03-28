@@ -12,7 +12,7 @@ CleanFormat <- function(Ecobici) {
 
   csvdata <- Ecobici$Files
 
-  #CLEAN each monthly data
+  #CLEAN all csv files
   cleandata <- lapply(csvdata, cleanData)
 
   #COMBINE all months in one data.frame
@@ -39,23 +39,31 @@ CleanFormat <- function(Ecobici) {
 #'
 #' @export
 cleanData <- function(csvdata){
-  ## MODIFY column names so that they are in lower case and REMOVE empty columns an rows
-  cleandata <- csvdata |>
-    janitor::clean_names() |>
-    janitor::remove_empty(c("rows", "cols"))
+  tryCatch(
+    {
+      ## MODIFY column names so that they are in lower case and REMOVE empty columns an rows
+      cleandata <- csvdata |>
+        janitor::clean_names() |>
+        janitor::remove_empty(c("rows", "cols"))
 
-  ## REMOVE special characters from column
-  cleandata <- cleandata |>
-    dplyr::rename_all(
-      ~ stringr::str_replace_all(.x, 'i_|_1|pk', '')
-      )
+      ## REMOVE special characters from column
+      cleandata <- cleandata |>
+        dplyr::rename_all(
+          ~ stringr::str_replace_all(.x, 'i_|_1|pk', '')
+        )
 
-  ## REORDER columns
-  col_names <- c("genero_usuario", "edad_usuario", "bici",
-                 "ciclo_estacion_retiro", "fecha_retiro", "hora_retiro",
-                 "ciclo_estacion_arribo", "fecha_arribo" ,"hora_arribo")
-  cleandata <- cleandata |>
-    dplyr::select(col_names)
+      ## REORDER columns
+      col_names <- c("genero_usuario", "edad_usuario", "bici",
+                     "ciclo_estacion_retiro", "fecha_retiro", "hora_retiro",
+                     "ciclo_estacion_arribo", "fecha_arribo" ,"hora_arribo")
+      cleandata <- cleandata |>
+        dplyr::select(col_names)
+    },
+    error = function(cond){
+      message(paste0("Error is in year dataset: ", csvdata$Fecha_Retiro[1]))
+      return(NA)
+    }
+  )
 
   return(cleandata)
 }
