@@ -1,6 +1,5 @@
 
-input_path = 'C:/Users/Nan/Documents/EcobiciDataLive/Input'
-output_path = 'C:/Users/Nan/Documents/EcobiciDataLive/Output'
+input_path = './extdata/dataEcobici/'
 
 RunEcobici <- function(input_path = NULL, output_path = NULL){
   ## READ input files
@@ -8,6 +7,7 @@ RunEcobici <- function(input_path = NULL, output_path = NULL){
   ## PREPARE data
   Ecobici <- CleanFormat(Ecobici)
   Ecobici <- TransformData(Ecobici)
+  Ecobici <- AddModulesLocation(Ecobici)
   Ecobici <- ValidateInput(Ecobici)
   ## SUMMARY results
   #Ecobici <- CreateTables(Ecobici)
@@ -16,6 +16,3 @@ RunEcobici <- function(input_path = NULL, output_path = NULL){
   #createCSV(Ecobici, output_path)
 }
 
-#CODE PROFILING
-#profiling <- profvis::profvis(RunEcobici(input_path, output_path))
-#htmlwidgets::saveWidget(profiling, "../profile_results.html")
