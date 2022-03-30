@@ -5,7 +5,7 @@
 -- Nancy hace match de la info.
 
 Hacer una intro de ecobici ---
-tal vez incluir un poco de datos de la encesta ecobici, 
+tal vez incluir un poco de datos de la encesta ecobici,
 agregar dos o tres preguntas de la ecuesta de ecobici
 
 
@@ -22,3 +22,13 @@ agregar dos o tres preguntas de la ecuesta de ecobici
     -- basandonos en la apertura de modulos, ver la afluencia de cada nuevo modulo, crecimiento esperado de uso de ecobici dado que se abrió el modulo -- Turf analysis
     -- lat/lon predicen cuantas bicis se van a usar
 
+
+
+## USO ECOBICI
+tiempo de promedio de viaje
+distribucion del numero de viajes
+curva de supervivencia de algunas bicis
+ver si alguna bici salió de circulación por mes
+identificar módulos eléctricos
+ruta más frecuentada retiro->arribo
+REVISAR DATOS JUNIO
